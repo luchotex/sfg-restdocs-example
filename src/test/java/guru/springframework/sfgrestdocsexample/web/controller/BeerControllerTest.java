@@ -26,11 +26,11 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -82,7 +82,20 @@ class BeerControllerTest {
 
     mockMvc
         .perform(post("/api/v1/beer/").contentType(MediaType.APPLICATION_JSON).content(beerDtoJson))
-        .andExpect(status().isCreated());
+        .andExpect(status().isCreated())
+        .andDo(
+            document(
+                "v1/beer",
+                requestFields(
+                    fieldWithPath("id").ignored(),
+                    fieldWithPath("version").ignored(),
+                    fieldWithPath("createdDate").ignored(),
+                    fieldWithPath("lastModifiedDate").ignored(),
+                    fieldWithPath("beerName").description("Name of the beer"),
+                    fieldWithPath("beerStyle").description("Style of Beer"),
+                    fieldWithPath("upc").description("Beer UPC").attributes(),
+                    fieldWithPath("price").description("Beer Price"),
+                    fieldWithPath("quantityOnHand").ignored())));
   }
 
   @Test
